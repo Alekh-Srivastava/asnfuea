@@ -1,4 +1,5 @@
-black
+# Populate dev_requirements.txt
+echo "black
 jupyter-black
 pylint
 scikit-learn
@@ -6,3 +7,10 @@ pandas
 numpy
 matplotlib
 seaborn
+torch
+torchvision
+tqdm
+fastapi
+uvicorn
+streamlit
+nltk" > dev_requirements.txt
