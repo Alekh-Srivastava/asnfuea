@@ -139,8 +139,8 @@ class SentimentPredictor:
         confidence_scores = torch.max(probabilities, dim=1)[0].cpu().numpy()
         
         # Map class IDs to labels
-        predicted_labels = [self.label_map.get(int(class_id), f"Class {class_id}") 
-                           for class_id in predicted_classes]
+        predicted_labels = [self.label_map.get(str(int(class_id)), f"Class {class_id}") 
+                   for class_id in predicted_classes]
         
         return {
             'texts': texts,
