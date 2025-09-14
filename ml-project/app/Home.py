@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 # API endpoint
-API_URL = "http://localhost:8000"
+API_URL = "http://0.0.0.0:8000"
 
 def get_available_models():
     """Get list of available models from the API."""
