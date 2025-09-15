@@ -1,5 +1,5 @@
 # Populate dev_requirements.txt
-echo "black
+black
 jupyter-black
 pylint
 scikit-learn
@@ -13,4 +13,4 @@ tqdm
 fastapi
 uvicorn
 streamlit
-nltk" > dev_requirements.txt
+nltk

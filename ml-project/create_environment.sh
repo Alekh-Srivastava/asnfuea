@@ -1,5 +1,3 @@
-# Create create_environment.sh
-cat > create_environment.sh << 'EOF'
 #!/bin/bash
 
 # Check if Anaconda is installed
@@ -36,7 +34,3 @@ echo "Setting up Jupyter kernel for ml-project environment..."
 python -m ipykernel install --user --name ml-project --display-name "Python (ml-project)"
 
 echo "Environment setup complete. You can now activate the environment with: conda activate ml-project"
-EOF
-
-# Make the script executable
-chmod +x create_environment.sh
