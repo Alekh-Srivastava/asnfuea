@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Set page config
 st.set_page_config(
-    page_title="COVID-19 Sentiment Analysis App",
+    page_title=" Sentiment Analysis App",
     page_icon="💬",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -138,10 +138,10 @@ def plot_confidence_distribution(df):
 
 def main():
     """Main function for the Streamlit app."""
-    st.title("COVID-19 Sentiment Analysis App")
+    st.title("Sentiment Analysis App")
     
     st.markdown("""
-    This app analyzes the sentiment of text related to COVID-19 using a GRU (Gated Recurrent Unit) model 
+    This app analyzes the sentiment of text using a GRU (Gated Recurrent Unit) model 
     trained on social media data. Upload your data or enter text directly to get sentiment predictions.
     """)
     
@@ -185,11 +185,12 @@ def main():
     
     # Single text analysis
     with tab1:
-        st.header("Analyze Single Text")
+        st.header("Analyse Single Text")
+        
         
         text_input = st.text_area(
             "Enter text to analyze:",
-            "The government's response to COVID-19 has been impressive. They've acted quickly and responsibly.",
+            "The government's response to has been impressive. They've acted quickly and responsibly.",
             height=150
         )
         
