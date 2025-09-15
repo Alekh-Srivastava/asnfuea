@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -10,7 +9,11 @@ import sys
 import uvicorn
 
 # Add the project root to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(PROJECT_ROOT)
+
+# Define the absolute path to models
+MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 
 from src.models.inference import SentimentPredictor, InferenceConfig
 from src.data.processor import TextProcessor
@@ -49,19 +52,27 @@ model_cache = {}  # Cache for loaded models
 
 def get_predictor(model_name: str = "covid_sentiment_gru") -> SentimentPredictor:
     """Get or create a SentimentPredictor instance."""
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Looking for model: {model_name}")
+    
     if model_name in model_cache:
         return model_cache[model_name]
     
-    # Set up model paths
-    model_path = f"models/{model_name}.pt"
-    vocab_path = f"models/vocab.pkl"
+    # Set up model paths with absolute paths
+    model_path = os.path.join(MODELS_DIR, f"{model_name}.pt")
+    vocab_path = os.path.join(MODELS_DIR, "vocab.pkl")
+    
+    print(f"Model path: {model_path}")
+    print(f"Vocab path: {vocab_path}")
+    print(f"Model exists: {os.path.exists(model_path)}")
+    print(f"Vocab exists: {os.path.exists(vocab_path)}")
     
     # Check if model and vocabulary exist
     if not os.path.exists(model_path):
-        raise HTTPException(status_code=404, detail=f"Model '{model_name}' not found")
+        raise HTTPException(status_code=404, detail=f"Model '{model_name}' not found at {model_path}")
     
     if not os.path.exists(vocab_path):
-        raise HTTPException(status_code=404, detail=f"Vocabulary file not found")
+        raise HTTPException(status_code=404, detail=f"Vocabulary file not found at {vocab_path}")
     
     # Create and load predictor
     config = InferenceConfig(model_path=model_path, vocab_path=vocab_path)
@@ -82,11 +93,10 @@ def read_root():
 def list_models():
     """List available models."""
     # List .pt files in the models directory
-    models_dir = "models"
-    if not os.path.exists(models_dir):
+    if not os.path.exists(MODELS_DIR):
         return {"models": []}
     
-    model_files = [f for f in os.listdir(models_dir) if f.endswith('.pt')]
+    model_files = [f for f in os.listdir(MODELS_DIR) if f.endswith('.pt')]
     model_names = [os.path.splitext(f)[0] for f in model_files]
     
     return {"models": model_names}
@@ -115,6 +125,7 @@ def predict_sentiment(request: TextRequest, model_name: str = "covid_sentiment_g
             confidence=result['confidence'][0]
         )
     except Exception as e:
+        print(f"Error in predict_sentiment: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/predict-batch", response_model=BatchPredictionResponse)
@@ -150,6 +161,7 @@ def predict_batch(request: BatchTextRequest):
         
         return BatchPredictionResponse(predictions=predictions)
     except Exception as e:
+        print(f"Error in predict_batch: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/upload-csv")
@@ -206,6 +218,7 @@ async def upload_csv(file: UploadFile = File(...), model_name: str = "covid_sent
             "predictions": result_data
         }
     except Exception as e:
+        print(f"Error in upload_csv: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/upload-json")
@@ -268,7 +281,10 @@ async def upload_json(file: UploadFile = File(...), model_name: str = "covid_sen
             "predictions": result_data
         }
     except Exception as e:
+        print(f"Error in upload_json: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
+    print(f"Starting server with models directory: {MODELS_DIR}")
+    print(f"Available models: {[f for f in os.listdir(MODELS_DIR) if f.endswith('.pt')]}")
     uvicorn.run("backend:app", host="0.0.0.0", port=8000, reload=True)

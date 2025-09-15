@@ -1,5 +1,3 @@
-# pylint: disable=invalid-name
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -16,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Set page config
 st.set_page_config(
-    page_title="GRU Sentiment Analysis App",
+    page_title="COVID-19 Sentiment Analysis App",
     page_icon="💬",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -32,7 +30,8 @@ def get_available_models():
         if response.status_code == 200:
             return response.json()["models"]
         return ["covid_sentiment_gru"]  # Default if API call fails
-    except:
+    except Exception as e:
+        st.sidebar.error(f"Error connecting to API: {e}")
         return ["covid_sentiment_gru"]  # Default if API is not running
 
 def predict_single_text(text, model_name):
@@ -139,12 +138,22 @@ def plot_confidence_distribution(df):
 
 def main():
     """Main function for the Streamlit app."""
-    st.title("GRU Sentiment Analysis App")
+    st.title("COVID-19 Sentiment Analysis App")
     
     st.markdown("""
-    This app analyzes the sentiment of text using a GRU (Gated Recurrent Unit) model trained on social media data.
-    Upload your data or enter text directly to get sentiment predictions.
+    This app analyzes the sentiment of text related to COVID-19 using a GRU (Gated Recurrent Unit) model 
+    trained on social media data. Upload your data or enter text directly to get sentiment predictions.
     """)
+    
+    # Check API connection
+    try:
+        response = requests.get(f"{API_URL}")
+        if response.status_code == 200:
+            st.sidebar.success("✅ Connected to backend API")
+        else:
+            st.sidebar.error("❌ API is running but returned an error")
+    except:
+        st.sidebar.error("❌ Cannot connect to backend API")
     
     # Sidebar with model selection
     st.sidebar.title("Model Selection")
