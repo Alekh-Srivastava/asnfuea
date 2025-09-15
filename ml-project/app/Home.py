@@ -31,9 +31,9 @@ def get_available_models():
         response = requests.get(f"{API_URL}/models")
         if response.status_code == 200:
             return response.json()["models"]
-        return ["sentiment_gru"]  # Default if API call fails
+        return ["covid_sentiment_gru"]  # Default if API call fails
     except:
-        return ["sentiment_gru"]  # Default if API is not running
+        return ["covid_sentiment_gru"]  # Default if API is not running
 
 def predict_single_text(text, model_name):
     """Make a prediction for a single text."""
@@ -157,7 +157,7 @@ def main():
             help="Select a model for sentiment analysis. 'all' will use all available models."
         )
     else:
-        model_name = "sentiment_gru"
+        model_name = "covid_sentiment_gru"
         st.sidebar.warning("No models available. Using default model.")
     
     # Display model information

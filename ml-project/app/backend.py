@@ -34,7 +34,7 @@ class TextRequest(BaseModel):
 
 class BatchTextRequest(BaseModel):
     texts: List[str]
-    model_name: Optional[str] = "sentiment_gru"
+    model_name: Optional[str] = "covid_sentiment_gru"
 
 class PredictionResponse(BaseModel):
     text: str
@@ -47,7 +47,7 @@ class BatchPredictionResponse(BaseModel):
 # Global variables
 model_cache = {}  # Cache for loaded models
 
-def get_predictor(model_name: str = "sentiment_gru") -> SentimentPredictor:
+def get_predictor(model_name: str = "covid_sentiment_gru") -> SentimentPredictor:
     """Get or create a SentimentPredictor instance."""
     if model_name in model_cache:
         return model_cache[model_name]
@@ -92,13 +92,13 @@ def list_models():
     return {"models": model_names}
 
 @app.post("/predict", response_model=PredictionResponse)
-def predict_sentiment(request: TextRequest, model_name: str = "sentiment_gru"):
+def predict_sentiment(request: TextRequest, model_name: str = "covid_sentiment_gru"):
     """
     Predict sentiment for a single text.
     
     Args:
         request: TextRequest with text field
-        model_name: Name of the model to use (default: sentiment_gru)
+        model_name: Name of the model to use (default: covid_sentiment_gru)
         
     Returns:
         PredictionResponse with sentiment prediction
@@ -153,13 +153,13 @@ def predict_batch(request: BatchTextRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/upload-csv")
-async def upload_csv(file: UploadFile = File(...), model_name: str = "sentiment_gru"):
+async def upload_csv(file: UploadFile = File(...), model_name: str = "covid_sentiment_gru"):
     """
     Upload a CSV file for batch prediction.
     
     Args:
         file: CSV file with text data
-        model_name: Name of the model to use (default: sentiment_gru)
+        model_name: Name of the model to use (default: covid_sentiment_gru)
         
     Returns:
         Dictionary with prediction results
@@ -209,13 +209,13 @@ async def upload_csv(file: UploadFile = File(...), model_name: str = "sentiment_
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/upload-json")
-async def upload_json(file: UploadFile = File(...), model_name: str = "sentiment_gru"):
+async def upload_json(file: UploadFile = File(...), model_name: str = "covid_sentiment_gru"):
     """
     Upload a JSON file for batch prediction.
     
     Args:
         file: JSON file with text data
-        model_name: Name of the model to use (default: sentiment_gru)
+        model_name: Name of the model to use (default: covid_sentiment_gru)
         
     Returns:
         Dictionary with prediction results

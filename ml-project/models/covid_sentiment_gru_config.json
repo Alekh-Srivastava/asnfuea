@@ -1,0 +1,25 @@
+{
+    "config": {
+        "embedding_dim": 194,
+        "hidden_dim": 243,
+        "n_layers": 3,
+        "dropout_rate": 0.104,
+        "batch_size": 64,
+        "epochs": 5,
+        "learning_rate": 0.0032
+    },
+    "vocab_size": 10000,
+    "num_classes": 3,
+    "metrics": {
+        "loss": 0.5394904253094696,
+        "accuracy": 0.8250728862973761,
+        "precision": 0.8245324200909913,
+        "recall": 0.8250728862973761,
+        "f1": 0.8245963280799801
+    },
+    "label_map": {
+        "0": "Negative",
+        "1": "Neutral",
+        "2": "Positive"
+    }
+}
